@@ -34,8 +34,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- CPU or GPU -->
-        <nd4j.backend>nd4j-native-platform</nd4j.backend>
-        <!--<nd4j.backend>nd4j-cuda-8.0-platform</nd4j.backend>-->
+        <!--<nd4j.backend>nd4j-native-platform</nd4j.backend>-->
+        <nd4j.backend>nd4j-cuda-8.0-platform</nd4j.backend>
 
         <dl4j.version>0.9.2-SNAPSHOT</dl4j.version>
     </properties>
@@ -68,7 +68,7 @@
 
         <dependency>
             <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native-platform</artifactId>
+            <artifactId>nd4j-cuda-8.0-platform</artifactId>
             <version>${dl4j.version}</version>
         </dependency>
 

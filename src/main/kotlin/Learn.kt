@@ -22,8 +22,9 @@ import org.deeplearning4j.nn.conf.WorkspaceMode
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.nd4j.linalg.activations.Activation
+import org.nd4j.linalg.api.buffer.DataBuffer
+import org.nd4j.linalg.api.buffer.util.DataTypeUtil
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
-import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -51,12 +52,11 @@ import kotlin.system.measureTimeMillis
 private val log = Logger.getGlobal()
 
 fun main(args: Array<String>) = measureTimeMillis {
-    println(Nd4j.getExecutioner().executionMode())
-    println(Nd4j.getExecutioner().javaClass.simpleName)
-
+    //println(Nd4j.getExecutioner().executionMode())
+    //println(Nd4j.getExecutioner().javaClass.simpleName)
 
     // OPTIMIZATION, and only for GPU @see https://deeplearning4j.org/gpu
-    // DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF)
+    DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF)
 
     // number of rows and columns in the input pictures.  Pixel relative position doesn't matter until using pixel adjacency
     // @see https://github.com/deeplearning4j/dl4j-examples/src/main/java/org/deeplearning4j/examples/convolution/AnimalsClassification.java#L292
@@ -84,7 +84,7 @@ fun main(args: Array<String>) = measureTimeMillis {
     if (saveDir.exists()) saveDir.delete()
     saveDir.mkdir()
 
-    log.info("Build model....")
+    log.info("Config complete, building model....")
     val hyperparamSpace = MultiLayerSpace.Builder()
             .seed(rngSeed.toLong())
             .trainingWorkspaceMode(WorkspaceMode.SEPARATE) // TODO enable when released
@@ -123,6 +123,7 @@ fun main(args: Array<String>) = measureTimeMillis {
                     MaxCandidatesCondition(120)
             ))
             .build()
+    println("All configurations complete.")
 
     val runner = LocalOptimizationRunner(configuration, MultiLayerNetworkTaskCreator())
     runner.execute()
