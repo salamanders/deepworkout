@@ -45,13 +45,17 @@ import kotlin.system.measureTimeMillis
  *
  * @author https://github.com/salamanders
  *
- * TODO: read latest https://github.com/deeplearning4j/Arbiter/blob/ae0c37e470e4650ae2eb312afbf939773037ee0b/arbiter-deeplearning4j/src/test/java/org/deeplearning4j/arbiter/computationgraph/TestGraphLocalExecution.java#L223
+ * TODO: read latest https://github.com/deeplearning4j/Arbiter/blob/master/arbiter-deeplearning4j/src/test/java/org/deeplearning4j/arbiter/computationgraph/TestGraphLocalExecution.java
  */
 
 
 private val log = Logger.getGlobal()
 
 fun main(args: Array<String>) = measureTimeMillis {
+    val saveDir = File("saves")
+    if (saveDir.exists()) saveDir.delete()
+    saveDir.mkdir()
+
     //println(Nd4j.getExecutioner().executionMode())
     //println(Nd4j.getExecutioner().javaClass.simpleName)
 
@@ -80,16 +84,14 @@ fun main(args: Array<String>) = measureTimeMillis {
             LossFunctions.LossFunction.MCXENT,
             LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD
     )
-    val saveDir = File("saves")
-    if (saveDir.exists()) saveDir.delete()
-    saveDir.mkdir()
+
 
     log.info("Config complete, building model....")
     val hyperparamSpace = MultiLayerSpace.Builder()
             .seed(rngSeed.toLong())
             .trainingWorkspaceMode(WorkspaceMode.SEPARATE) // TODO enable when released
             .weightInit(WeightInit.XAVIER) // "Avoids steep learning curve by picking weights from a Gaussian distribution based on number of input neurons"
-            .updater(AdamSpace(learningRateHyperparam))
+            .updater(AdamSpace(learningRateHyperparam)) // Why Adam?
             .l2(l2Hyperparam)
             .addLayer(DenseLayerSpace.Builder() // input layer
                     .nIn(numRows * numColumns)
