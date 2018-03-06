@@ -1,8 +1,34 @@
+import org.deeplearning4j.arbiter.MultiLayerSpace
+import org.deeplearning4j.arbiter.conf.updater.AdamSpace
+import org.deeplearning4j.arbiter.layers.DenseLayerSpace
+import org.deeplearning4j.arbiter.layers.OutputLayerSpace
+import org.deeplearning4j.arbiter.optimize.api.data.DataProvider
+import org.deeplearning4j.arbiter.optimize.api.termination.MaxCandidatesCondition
+import org.deeplearning4j.arbiter.optimize.api.termination.MaxTimeCondition
+import org.deeplearning4j.arbiter.optimize.config.OptimizationConfiguration
+import org.deeplearning4j.arbiter.optimize.generator.RandomSearchGenerator
+import org.deeplearning4j.arbiter.optimize.parameter.continuous.ContinuousParameterSpace
+import org.deeplearning4j.arbiter.optimize.parameter.discrete.DiscreteParameterSpace
+import org.deeplearning4j.arbiter.optimize.parameter.integer.IntegerParameterSpace
+import org.deeplearning4j.arbiter.optimize.parameter.math.MathOp
+import org.deeplearning4j.arbiter.optimize.parameter.math.Op
+import org.deeplearning4j.arbiter.optimize.runner.LocalOptimizationRunner
+import org.deeplearning4j.arbiter.saver.local.FileModelSaver
+import org.deeplearning4j.arbiter.scoring.ScoreFunctions
+import org.deeplearning4j.arbiter.task.MultiLayerNetworkTaskCreator
+import org.deeplearning4j.datasets.iterator.MultipleEpochsIterator
+import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator
+import org.deeplearning4j.nn.conf.WorkspaceMode
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
+import org.deeplearning4j.nn.weights.WeightInit
+import org.nd4j.linalg.activations.Activation
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+import org.nd4j.linalg.factory.Nd4j
+import org.nd4j.linalg.lossfunctions.LossFunctions
 import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
-
 
 /**
  * Hello-world of deep learning using deeplearning4j, Kotlin, Gradle
@@ -25,8 +51,12 @@ import kotlin.system.measureTimeMillis
 private val log = Logger.getGlobal()
 
 fun main(args: Array<String>) = measureTimeMillis {
-    // Hopefully limits GPU memory usage @see https://deeplearning4j.org/gpu
-    DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF)
+    println(Nd4j.getExecutioner().executionMode())
+    println(Nd4j.getExecutioner().javaClass.simpleName)
+
+
+    // OPTIMIZATION, and only for GPU @see https://deeplearning4j.org/gpu
+    // DataTypeUtil.setDTypeForContext(DataBuffer.Type.HALF)
 
     // number of rows and columns in the input pictures.  Pixel relative position doesn't matter until using pixel adjacency
     // @see https://github.com/deeplearning4j/dl4j-examples/src/main/java/org/deeplearning4j/examples/convolution/AnimalsClassification.java#L292
